@@ -17,3 +17,9 @@ def show_category(category_id):
 @blog_bp.route('/post/<int:post_id>', method=['GET','POST'])
 def show_post(post_id):
     return render_template('blog/post.html')
+
+
+# @blog_bp.route('/post/electric_charge',method=['POST'])
+# def electric_charge():
+#     return render_template('')
+
