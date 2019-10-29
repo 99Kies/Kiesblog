@@ -14,7 +14,7 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
         # if not set config_name ,than use development config
-    print(config_name)
+    # print(config_name)
     app = Flask('kiesblog')
     app.config.from_object(config[config_name])
 

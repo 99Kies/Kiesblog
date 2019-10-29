@@ -14,7 +14,7 @@ def abouit():
 def show_category(category_id):
     return render_template('blog/category.html')
 
-@blog_bp.route('/post/<int:post_id>', method=['GET','POST'])
+@blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
 def show_post(post_id):
     return render_template('blog/post.html')
 
