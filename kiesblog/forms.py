@@ -44,4 +44,4 @@ class AdminForm(FlaskForm):
     email = HiddenField()
     site = HiddenField()
 
-class 
+# class

@@ -1,5 +1,7 @@
 from flask import url_for, current_app
-
+from threading import Thread
+from flask_mail import Message
+from kiesblog.extensions import mail
 
 def send_mail(subject, to, html):
     pass
@@ -20,4 +22,17 @@ def send_new_reply_email(comment):
                    'click the link below check:</p>'
               '<p><a href="%s">%s</a></p>'
               '<p><small style="color: #868e96">Do not reply this email.</small></p>'
-              )
+              % (comment.post.title, post_url, post_url))
+
+
+def _send_async_mail(app, message):
+    with app.app_context():
+        mail.send(message)
+
+def send_async_mail(subject, to, html):
+    app = current_app._get_current_object() # 获取被代理的真实对象
+    message = Message(subject, recipients=[to], html=html)
+    thr = Thread(target=_send_async_mail, args=[app, message])
+    thr.start()
+    return thr
+
