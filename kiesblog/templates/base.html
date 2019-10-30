@@ -1,4 +1,4 @@
-{% from "macros.html" import nav_link %}
+{% from 'bootstrap/nav.html' import render_nav_item %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,13 +42,11 @@
     {% block content %}{% endblock content%}
     {% block footer %}
      <footer class="text-center">
-<!--        {% block footer %}-->
             <small> &copy; 2019 <a href="https://blog.csdn.net/qq_19381989" title="">99Kies</a> /
                 <a href="https://github.com/99kies" title="Fork me on GitHub">GitHub</a> /
                 <a href="https://www.baidu.com" title="">Blog</a>
             </small>
             <p><a id="bottom" href="#" title="Go Top">&uarr;</a></p>
-<!--        {% endblock %}-->
     </footer>
     {% endblock footer %}
 </main>

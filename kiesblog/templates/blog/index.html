@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% block content %}
 {% if posts %}
 <!--利用for来迭代所有的博文，依次渲染所有的posts-->
@@ -9,7 +10,7 @@
         </p>
         <small>
             Comments: <a href="{{ url_for('.show_post',post_id=post.id) }}#comments">{{ post.comments|length  }}</a>&nbsp;&nbsp;
-            Category: <a href="{{ url_for('.show_category', category_id=post.category.id) }}"{{ post.category.name }}</a>
+            Category: <a href="{{ url_for('.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
             <span class="float-right">{{ moment(post.timestamp).format("LLL") }}</span>
         </small>
         {% if not loop.list %}
@@ -25,3 +26,4 @@
         {% endif %}
     </div>
 {% endif %}
+{% endblock %}
