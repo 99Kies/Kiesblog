@@ -34,7 +34,7 @@ def abouit():
 # @blog_bp.route('/category/<int:category_id>')
 # def show_category(category_id):
 #     return render_template('blog/category.html')
-@blog_bp.route('/category/<int:category_id')
+@blog_bp.route('/category/<int:category_id>')
 def show_category(category_id):
     category = Category.query.get_or_404(category_id)
     page = request.args.get('page',1,type=int)

@@ -10,7 +10,8 @@ class BaseConfig(object):
     # 将一些配置写入（SqlAlchemy，Mail...的配置)
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    # FLASK_DEBUG=True
+    KIESBLOG_POST_PER_PAGE = 10
 
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = 465
