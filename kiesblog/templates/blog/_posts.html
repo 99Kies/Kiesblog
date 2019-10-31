@@ -1,14 +1,15 @@
+{#{%  %}#}
 {% if posts %}
 <!--利用for来迭代所有的博文，依次渲染所有的posts-->
     {% for post in posts %}
-        <h3 class="text-primary"><a href="{{ url_for('.show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
+        <h3 class="text-primary"><a href="{{ url_for('blog.show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
         <p>
             {{ post.body|striptags|truncate }}
-            <samll><a href="{{ url_for('.show_post', post_id=post.id) }}">Read More</a></samll>
+            <samll><a href="{{ url_for('blog.show_post', post_id=post.id) }}">Read More</a></samll>
         </p>
         <small>
-            Comments: <a href="{{ url_for('.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>&nbsp;&nbsp;
-            Category: <a href="{{ url_for('.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
+            Comments: <a href="{{ url_for('blog.show_post', post_id=post.id) }}#comments">{{ post.comments|length }}</a>&nbsp;&nbsp;
+            Category: <a href="{{ url_for('blog.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
             <span class="float-right">{{ moment(post.timestamp).format("LL") }}</span>
         </small>
         {% if not loop.last %}

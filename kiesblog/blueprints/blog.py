@@ -25,8 +25,6 @@ def index(page):
     return render_template('blog/index.html', pagination=pagination, posts=posts)
 
 
-
-
 @blog_bp.route('/about')
 def abouit():
     return render_template('blog/about.html')
@@ -46,17 +44,14 @@ def show_category(category_id):
 
 
 
-# @blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
+@blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
+def show_post(post_id):
+    return render_template('blog/post.html')
+
+# @blog_bp.route('/post/<slug>')
 # def show_post(post_id):
-#     return render_template('blog/post.html')
-
-@blog_bp.route('/post/<slug>')
-def show_post(slug):
-    post = Post.query.filter_by(slug=slug).first_or_404()
-    return render_template('post.html', post=post)
-
-
-
+#     post = Post.query.filter_by(slug=slug).first_or_404()
+#     return render_template('blog/post.html', post=post)
 
 # @blog_bp.route('/post/electric_charge',method=['POST'])
 # def electric_charge():

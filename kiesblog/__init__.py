@@ -16,8 +16,10 @@ def create_app(config_name=None):
         # if not set config_name ,than use development config
     # print(config_name)
     app = Flask('kiesblog')
-    app.config.from_object(config[config_name])
 
+    app.config.from_object(config[config_name])
+    # app.debug=True
+    # app.config.update(DEBUG=True)
     # 注册函数
     register_logging(app)
     register_extensions(app)
@@ -102,3 +104,7 @@ def register_template_context(app):
         return dict(admin=admin,categories=categories)
 
 
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)
