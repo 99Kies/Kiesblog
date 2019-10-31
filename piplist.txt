@@ -1,0 +1,8 @@
+flask
+flask_mail
+flask_bootstrap
+flask_sqlalchemy
+flask_moment
+flask_ckeditor
+faker
+flask_wtf
