@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, current_app
-from kiesblog.models import Post, Category
+from kiesblog.models import Post, Category, Comment
 
 
 blog_bp = Blueprint('blog', __name__)
@@ -44,15 +44,44 @@ def show_category(category_id):
 
 
 
-@blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
+# @blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
+# def show_post(post_id):
+#     return render_template('blog/post.html')
+
+@blog_bp.route('/post/<int:post_id>')
 def show_post(post_id):
-    return render_template('blog/post.html')
+    # post = Post.query.filter_by(slug=slug).first_or_404()
+    # return render_template('blog/post.html', post=post)
+    post = Post.query.get_or_404(post_id)
+    # 通过get_or_404方法查询指定id的记录, 如果没有找到, 返回404错误
+    return render_template('blog/post.html', post=post)
 
 # @blog_bp.route('/post/<slug>')
-# def show_post(post_id):
-#     post = Post.query.filter_by(slug=slug).first_or_404()
-#     return render_template('blog/post.html', post=post)
+# def show_post(slug):
+#     post=Post.query.filter_by(slug=slug).first_or_404()
+#     return render_template('post.html',post=post)
+
 
 # @blog_bp.route('/post/electric_charge',method=['POST'])
 # def electric_charge():
 #     return render_template('')
+
+
+@blog_bp.route('/category/<int:category_id>')
+def show_category(category_id):
+    category = Category.query.get_or_404(category_id)
+    page = request.args.get('page',1,type=int)
+    per_page = current_app.config['KIESBLOG_POST_PER_PAGE']
+    pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page=per_page)
+    posts=pagination.items
+    return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
+
+@blog_bp.route('/post/<int:post_id>', methods=['GET','POST'])
+def show_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    page = request.args.get('page',1, type=int)
+    per_page = current_app.config['KIESBLOG_COMMENT_PER_PAGE']
+    pagination = Comment.query.with_parent(post).order_by(Comment.timestamp.asc()).paginate(page, per_page)
+    comments = pagination.items
+    return render_template('blog/post.html', post=post_id, pagination=pagination, comments=comments)
+

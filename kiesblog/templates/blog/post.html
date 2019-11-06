@@ -1,41 +1,113 @@
 {% extends 'base.html' %}
-{% block title %} {{ post.title }} {% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>{{ post.title }}</h1>
     <small>
-        Category: <a href="{{ url_for('blog.show_category', category_id=post.category.id) }}">{{ post.category.name }}</a>
+        Category: <a href="{{ url_for('blog.show_category',category_id=post.category.id) }}">{{ post.category.name }}</a><br>
         Date: {{ moment(post.timestamp).format('LL') }}
     </small>
 </div>
 <div class="row">
     <div class="col-sm-8">
         {{ post.body|safe }}
+        <hr>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".postLinkModal">Share</button>
+        <div class="modal fade postLinkModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title">Permalink</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="postLink"
+                        value="{{ url_for('blog.show_post',post_id=post.id, _external=True) }}"readonly>
+                        <span class="input-group-append">
+                        <button class="btn" data-clipboard-action="copy" data-clipboard-target="#postLink">
+                            <img src="https://clipboardjs.com/assets/images/clippy.svg" width="13">
+                        </button>
+{#                             <button class="btn" data-clipboard-action="copy" data-clipboard-target="#postLink">Copy</button>#}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
     <div class="col-sm-4 sidebar">
         {% include "blog/_sidebar.html" %}
     </div>
-</div>
-{{ post.body|safe }}
-<hr>
-<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-targer=".postLinkModal">Share</button>
-<div class="modal fade postLinkModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Permalink</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-label="true">&times;</span>
-                </button>
-            </div>
-         <div class="modal-body">
-             <div class="form-group">
-                 <input type="text" class="form-control"
-                 value="{{ url_for('blog.show_post', post_id=post.id, _external=True) }}" readonly>
-             </div>
-         </div>
-        </div>
+
+
+    <div class="comments" id="comments">
+        <h3>{{ comments|length }} Comments
+            <small>
+                <a href="{{ url_for('blog.show_post', post_id=post.id, page=pagination.pages or 1) }}#comments">latest</a>
+            </small>
+        </h3>
+        {% if comments %}
+            <ul class="list-group">
+                {% for comment in comments %}
+                    <li class="list-group-item list-group-item-action flex-column">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <a href="{% if comment.site %} {{ comment.site }} {% else %}#{% endif %}" target="_blank">
+                                    {% if comment.from_admin %}
+                                        {{ admin.name }}
+                                    {% else %}
+                                        {{ comment.author }}
+                                    {% endif %}
+                                </a>
+                            {% if comment.from_admin %}
+                                <span class="badge badge-primary">Author</span>
+                            {% endif %}
+                            {% if comment.replied %}
+                                <span class="badge badge-light">Reply</span>
+                            {% endif %}
+                            </h5>
+                        <small data-toggle="tooltip" data-placement="top" data-delag="500" data-timestamp="{{ comment.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") }}"></small>
+                        {{ moment(comment.timestamp).fromNow }}
+                        </div>
+                    </li>
+            </ul>
+    </div>
+    <div>
+        {% if post.comments %}
+            {% for comment in post.comments %}
+{#                <a class="list-group-item list-group-item-action flex-column" style="padding-right: 800px;">#}
+                <a class="list-group-item list-group-item-action flex-column" style="padding-right: 800px;width:auto">
+{#                <div class="d-flex w-100 justify-content-between">#}
+                    <div class="d-flex w-100 justify-content-between">
+{#                    <h5 class="mb-1 text-success">{{ comment.author }} {# 发送文章的用户名 #}
+                    <h5 class="mb-1 text-success">{{ comment.author }} {# 发送文章的用户名 #}
+                        <small class="text-muted"> #{{ loop.revindex }}</small>{# loop.revindex 表示留言的反向序列 #}
+                    </h5>
+                        <small data-toggle="tooltip" data-placement="top"
+                           data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}"
+                           data-delay="500" >
+                        {{ moment(comment.timestamp).fromNow(refresh=True) }}
+                        {# fromNow()显示相对时间, refresh为True可以让时间戳在不重载页面的情况下,随着时间的变化自动刷新 #}
+                    </small>
+                </div>
+                <p class="mb-1" style="width: auto">{{ comment.body }}</p>
+            </a>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
+<script src="../../static/js/clipboard.min.js"></script>
+<script>
+    var clipboard = new ClipboardJS('.btn');
+    clipboard.on('success', function(e) {
+        console.log(e);
+    });
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
+</script>
 
 {% endblock %}
