@@ -72,9 +72,16 @@
                         <small data-toggle="tooltip" data-placement="top" data-delag="500" data-timestamp="{{ comment.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") }}"></small>
                         {{ moment(comment.timestamp).fromNow }}
                         </div>
+                    {% if comment.replied %}
+                        <p class="alert alert-dark reply-body">{{ comment.replied.author }};
+                            <br>{{ comment.replied.body }}</p>
                     </li>
             </ul>
     </div>
+
+
+
+
     <div>
         {% if post.comments %}
             {% for comment in post.comments %}
@@ -93,12 +100,15 @@
                         {# fromNow()显示相对时间, refresh为True可以让时间戳在不重载页面的情况下,随着时间的变化自动刷新 #}
                     </small>
                 </div>
+
                 <p class="mb-1" style="width: auto">{{ comment.body }}</p>
             </a>
             {% endfor %}
         {% endif %}
     </div>
 </div>
+
+
 <script src="../../static/js/clipboard.min.js"></script>
 <script>
     var clipboard = new ClipboardJS('.btn');
