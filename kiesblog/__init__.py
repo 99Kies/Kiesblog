@@ -2,7 +2,7 @@ import os
 import click
 from flask import Flask, template_rendered, render_template
 from kiesblog.settings import config
-from kiesblog.extensions import bootstrap, db, moment, mail, ckeditor
+from kiesblog.extensions import bootstrap, db, moment, mail, ckeditor, login_manager
 # from kiesblog.blueprints import auth, admin, blog
 from kiesblog.blueprints.admin import admin_bp
 from kiesblog.blueprints.auth import auth_bp
@@ -40,7 +40,7 @@ def register_extensions(app):
     mail.init_app(app)
     ckeditor.init_app(app)
     moment.init_app(app)
-
+    login_manager.init_app(app)
 
 def register_blueprints(app):
     # app.register_blueprint(blog.blog_bp)

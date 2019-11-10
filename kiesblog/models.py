@@ -38,10 +38,10 @@ class Category(db.Model):
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50))
+    title = db.Column(db.String(60))
     body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    # can_comment = db.Column(db.Boolean, default=True) # here bug
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    can_comment = db.Column(db.Boolean, default=True)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     #这个是外键的意思,mean,category_id <==> category.id, to build category id for relationship with category, category_id : post == one to many

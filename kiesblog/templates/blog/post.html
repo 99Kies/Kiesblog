@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'bootstrap/form.html' import render_form %}
 {% block title %}{{ post.title }}{% endblock %}
 {% block content %}
 <div class="page-header">
@@ -41,7 +43,7 @@
     <div class="col-sm-4 sidebar">
         {% include "blog/_sidebar.html" %}
     </div>
-
+</div>
 
     <div class="comments" id="comments">
         <h3>{{ comments|length }} Comments
@@ -69,44 +71,73 @@
                                 <span class="badge badge-light">Reply</span>
                             {% endif %}
                             </h5>
-                        <small data-toggle="tooltip" data-placement="top" data-delag="500" data-timestamp="{{ comment.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") }}"></small>
-                        {{ moment(comment.timestamp).fromNow }}
+                        <small data-toggle="tooltip" data-placement="top" data-delag="500" data-timestamp="{{ comment.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") }}">
+                               {{ moment(comment.timestamp).fromNow() }}
+                            {#                         fromNow()显示相对时间, refresh为True可以让时间戳在不重载页面的情况下,随着时间的变化自动刷新#}
+                        </small>
+
                         </div>
                     {% if comment.replied %}
                         <p class="alert alert-dark reply-body">{{ comment.replied.author }};
                             <br>{{ comment.replied.body }}</p>
+                    {% endif %}
+                    <p class="mb-1">{{ comment.body }}</p>
+                        <div class="float-right">
+                            <a class="btn btn-light btn-sm" href="{{ url_for('blog.reply_comment',comment_id=comment.id) }}">Reply</a>
+                        </div>
                     </li>
+                {% endfor %}
             </ul>
-    </div>
+        {% else %}
+            <div class="tip"><h5>No comments.</h5></div>
+        {% endif %}
 
+        {% if comments %}
+            {{ render_pagination(pagination, fragment='#comments') }}
+        {% endif %}
 
-
-
-    <div>
-        {% if post.comments %}
-            {% for comment in post.comments %}
-{#                <a class="list-group-item list-group-item-action flex-column" style="padding-right: 800px;">#}
-                <a class="list-group-item list-group-item-action flex-column" style="padding-right: 800px;width:auto">
-{#                <div class="d-flex w-100 justify-content-between">#}
-                    <div class="d-flex w-100 justify-content-between">
-{#                    <h5 class="mb-1 text-success">{{ comment.author }} {# 发送文章的用户名 #}
-                    <h5 class="mb-1 text-success">{{ comment.author }} {# 发送文章的用户名 #}
-                        <small class="text-muted"> #{{ loop.revindex }}</small>{# loop.revindex 表示留言的反向序列 #}
-                    </h5>
-                        <small data-toggle="tooltip" data-placement="top"
-                           data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}"
-                           data-delay="500" >
-                        {{ moment(comment.timestamp).fromNow(refresh=True) }}
-                        {# fromNow()显示相对时间, refresh为True可以让时间戳在不重载页面的情况下,随着时间的变化自动刷新 #}
-                    </small>
-                </div>
-
-                <p class="mb-1" style="width: auto">{{ comment.body }}</p>
-            </a>
-            {% endfor %}
+        {% if request.args.get('reply') %}
+            <div class="alert alert-dark">
+                Reply to <strong>{{ request.args.get('author') }}</strong>;
+                <a class="float-right" href="{{ url_for('blog.show_post', post_id=post.id) }}">Cancel</a>
+            </div>
+        {% endif %}
+        {% if post.can_comment %}
+            <div id="comment-form">
+                {{ render_form(form, action=request.full_path) }}
+            </div>
+        {% else %}
+            <div class="tip"><h5>Comment disabled.</h5></div>
         {% endif %}
     </div>
-</div>
+
+
+{#    <small><a href="{{ url_for("blog.show_post", post_id=post.id, page=pagination.pages or 1) }}#comments">latest</a> </small>#}
+{#    {% if comment.replied %}#}
+{#        {{ comment.replied.author.name }}: <br>{{ comment.replied.body }}#}
+{#    {% endif %}#}
+{#    {{ comment.body }}#}
+
+{#<div>#}
+{#        {% if post.comments %}#}
+{#            {% for comment in post.comments %}#}
+{#                <a class="list-group-item list-group-item-action flex-column" style="padding-right: 800px;width:auto">#}
+{#                    <div class="d-flex w-100 justify-content-between">#}
+{#                    <h5 class="mb-1 text-success">{{ comment.author }} {# 发送文章的用户名#}
+{#                        <small class="text-muted"> #{{ loop.revindex }}</small>{# loop.revindex 表示留言的反向序列#}
+{#                    </h5>#}
+{#                        <small data-toggle="tooltip" data-placement="top"#}
+{#                           data-timestamp="{{ comment.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}"#}
+{#                           data-delay="500" >#}
+{#                        {{ moment(comment.timestamp).fromNow(refresh=True) }}#}
+{#                         fromNow()显示相对时间, refresh为True可以让时间戳在不重载页面的情况下,随着时间的变化自动刷新#}
+{#                    </small>#}
+{#                </div>#}
+{#                <p class="mb-1" style="width: auto">{{ comment.body }}</p>#}
+{#            </a>#}
+{#            {% endfor %}#}
+{#        {% endif %}#}
+{#    </div>#}
 
 
 <script src="../../static/js/clipboard.min.js"></script>
@@ -119,5 +150,9 @@
         console.log(e);
     });
 </script>
-
+{#{% endblock %}#}
+{#</div>#}
 {% endblock %}
+
+
+{# 模板中的url_for是以類似get的方式進行傳參，而且可以傳入函數中定義的變量//// 就是構造url #}

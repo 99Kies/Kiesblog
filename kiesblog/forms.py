@@ -29,7 +29,7 @@ class CategoryForm(FlaskForm):
         if Category.query.filter_by(name=field.data).first():
             raise ValidationError('Name already in use.')
 
-class CommitForm(FlaskForm):
+class CommentForm(FlaskForm):
     # DataRequired判断不能为空，Optional则可以为空
     author = StringField('Name', validators=[DataRequired(), Length(1,30)])
     email = StringField('Email' ,validators=[DataRequired(), Email(), Length(1,255)])
@@ -38,9 +38,8 @@ class CommitForm(FlaskForm):
     body = CKEditorField('Body', validators=[DataRequired()])
     submit = SubmitField()
 
-class AdminForm(FlaskForm):
+class AdminCommentForm(FlaskForm):
     author = HiddenField()
-    #
     email = HiddenField()
     site = HiddenField()
 

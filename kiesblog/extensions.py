@@ -3,7 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_ckeditor import CKEditor
 from flask_moment import Moment
+from flask_login import LoginManager
 
+
+login_manager = LoginManager()
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 moment = Moment()
