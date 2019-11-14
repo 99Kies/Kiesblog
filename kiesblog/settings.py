@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 # print('__file__', __file__)
 # print('basedir', basedir)
-
+# KIESBLOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
 class BaseConfig(object):
     # 将一些配置写入（SqlAlchemy，Mail...的配置)
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
@@ -26,6 +26,10 @@ class BaseConfig(object):
     KIESBLOG_POST_PER_PAGE = 10
     KIESBLOG_MANAGE_POST_PER_PAGE = 15
     KIESBLOG_COMMENT_PER_PAGE = 15
+
+    KIESBLOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
+
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.db')

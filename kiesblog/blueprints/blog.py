@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, current_app, url_for, flash, redirect
+from flask import Blueprint, render_template, request, current_app, url_for, flash, redirect, abort, make_response
 from flask_login import current_user
 from kiesblog.extensions import db, login_manager
 from kiesblog.models import Post, Category, Comment
 from kiesblog.forms import AdminCommentForm, CommentForm
 from kiesblog.email import send_new_reply_email, send_new_comment_email
-
+from kiesblog.utils import redirect_back
+# from kiesblog.settings import BaseConfig
 
 blog_bp = Blueprint('blog', __name__)
 login_manager.login_view = 'login'
@@ -93,3 +94,23 @@ def show_post(post_id):
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     return redirect(url_for('.show_post',post_id=comment.post_id, reply=comment_id, author=comment.author)+'#comment-form')
+
+
+# @blog_bp.route('/change-theme/<theme_name>')
+# def change_theme(theme_name):
+#     if theme_name not in current_app.config['KIESBLOG_THEMES'].keys():
+#         abort(404)
+#     response = make_response(redirect_back())
+#     response.set_cookie('theme', theme_name, max_age=30*24*60*60)
+#     return response
+
+
+@blog_bp.route('/change-theme/<theme_name>')
+def change_theme(theme_name):
+    print(current_app.config['KIESBLOG_THEMES'])
+    if theme_name not in current_app.config['KIESBLOG_THEMES'].keys():
+        abort(404)
+
+    response = make_response(redirect_back())
+    response.set_cookie('theme', theme_name, max_age=30 * 24 * 60 * 60)
+    return response

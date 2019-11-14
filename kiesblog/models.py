@@ -52,9 +52,6 @@ class Post(db.Model):
 
     # 一条文章可以多条评论，一个分类可以有多条文章
 
-    def __repr__(self):
-        return '<Post: {}>'.format(self.title)
-
 # Post and Comment: One to many bothway relationship
 # so if i del post, comment del too
 

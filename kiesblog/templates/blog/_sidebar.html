@@ -18,5 +18,18 @@
     <h1 class="display-3">{{ admin.blog_title|default('Blog Title') }}</h1>
     <h4 class="text-muted">&nbsp;{{ admin.blog_sub_title|default('Blog Subtitle') }}</h4>
 </div>
-
+{# {{ config.KIESBLOG_THEMES.items() }}#}
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Change Theme
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {% for theme_name, display_name in config.KIESBLOG_THEMES.items() %}
+        <a class="dropdown-item"
+           href="{{ url_for('blog.change_theme', theme_name=theme_name, next=request.full_path) }}">
+            {{ display_name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
 {#<!--<li {% if request.endpoint=="blog.index" %}class="active"{% endif %}><a href="{{ url_for('blog.index') }}">Home</a></li>-->#}
