@@ -1,8 +1,10 @@
 # # -*- coding: utf-8 -*-
 from kiesblog.extensions import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
     password_hash = db.Column(db.String(128))
@@ -15,6 +17,13 @@ class Admin(db.Model):
     # name
     about = db.Column(db.Text)
     # about messages
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
     def __repr__(self):
         return '<Admin: {}>'.format(self.name)
@@ -73,3 +82,15 @@ class Comment(db.Model):
     # Same with:
     # replies = db.relationship('Comment', backref=db.backref('replied', remote_side=[id]),
     # cascade='all,delete-orphan')
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    password_hash = db.Column(db.String(128))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+

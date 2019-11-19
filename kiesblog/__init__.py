@@ -33,6 +33,7 @@ def create_app(config_name=None):
 def register_logging(app):
     pass
 
+
 def register_extensions(app):
     # 要分开实例化模块，这样是为了避免引包重复
     bootstrap.init_app(app)
@@ -40,6 +41,7 @@ def register_extensions(app):
     mail.init_app(app)
     ckeditor.init_app(app)
     moment.init_app(app)
+
     login_manager.init_app(app)
 
 def register_blueprints(app):
@@ -75,6 +77,37 @@ def register_commands(app):
 
         click.echo('Done.')
 
+    @app.cli.command()
+    @click.option('--username', prompt=True, help='The username used to login.')
+    @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True,
+                  help='The password used to login.')
+    def init(username, password):
+        '''building, kiesblog, just for you '''
+        click.echo('Initializing the database...')
+        db.create_all()
+
+        admin = Admin.query.first()
+        if admin:
+            click.echo('The administrator already exists, updating...')
+            admin.username = username
+            admin.set_password(password)
+        else:
+            click.echo("Creating the temporary administrator account...")
+            admin = Admin(username=username,
+                          blog_title='KiesBlog',
+                          blog_sub_title='So, where is the girl.',
+                          name="Admin",
+                          about='Anything about you.')
+            admin.set_password(password)
+            db.session.add(admin)
+        category = Category.query.first()
+        if category is None:
+            click.echo("Creating the default category...")
+            category = Category(name="Default")
+            db.session.add(category)
+
+        db.session.commit()
+        click.echo("Done.")
 
 
 
