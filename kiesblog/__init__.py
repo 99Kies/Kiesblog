@@ -1,6 +1,6 @@
 import os
 import click
-from flask import Flask, template_rendered, render_template
+from flask import Flask, render_template
 from kiesblog.settings import config
 from kiesblog.extensions import bootstrap, db, moment, mail, ckeditor, login_manager
 # from kiesblog.blueprints import auth, admin, blog
@@ -134,7 +134,7 @@ def register_template_context(app):
         # 博主的数据和分类信息要放到模板上下文中，
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
-        return dict(admin=admin,categories=categories)
+        return dict(admin=admin, categories=categories)
 
 
 

@@ -20,4 +20,11 @@ def load_user(user_id):
     from kiesblog.models import Admin
     user = Admin.query.get(int(user_id))
     return user
+    # 返回已经注册过的用户信息
 
+
+login_manager.login_view = 'auth.login'# 指定视图保护的视图函数
+print(login_manager.login_view)
+login_manager.login_message_category = 'warning'
+# login_manager.login_message = u'请先登录！'
+# 当用户没有登陆 却要访问需要登陆的url  就会跳转到视图保护的页面
