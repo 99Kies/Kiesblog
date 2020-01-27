@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request, current_app
 from flask_login import login_required
 from kiesblog.models import Post, Admin, Category, Comment, User
 
@@ -20,7 +20,16 @@ def settings():
 #     pass
 
 @admin_bp.route('/post/delete/<id>', methods=["POST"])
+@login_required
 def delete_post(id):
     post = Post.query.get(id)
     post.delete()
     return redirect(url_for('blog.index'))
+
+@admin_bp.route('/post/manage')
+@login_required
+def manage_post():
+    page = request.args.get('page', 1, type=int)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+        page, per_page=current_app.config["KIESBLOG_MANAGE_POST_PER_PAGE"]
+    )
