@@ -33,3 +33,6 @@ def manage_post():
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config["KIESBLOG_MANAGE_POST_PER_PAGE"]
     )
+    posts = pagination.items
+    # 每页的文章信息
+    return render_template('admin/manage_post.html', pagination=pagination, posts=posts)
