@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, redirect, flash
+from flask import Blueprint, url_for, render_template, flash
 from flask_login import current_user, login_user, login_required, logout_user
 from kiesblog.models import Admin
 from kiesblog.forms import LoginForm
@@ -31,9 +31,12 @@ def login():
             flash('No account.', 'warning')
     return render_template('auth/login.html', form=form)
 
+
 @auth_bp.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("Logout success.", 'info')
     return redirect_back()
+
+# @auth_bp.route('/')

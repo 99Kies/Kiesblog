@@ -24,7 +24,7 @@ def load_user(user_id):
 
 
 login_manager.login_view = 'auth.login'# 指定视图保护的视图函数
-print(login_manager.login_view)
+# print(login_manager.login_view)
 login_manager.login_message_category = 'warning'
 # login_manager.login_message = u'请先登录！'
 # 当用户没有登陆 却要访问需要登陆的url  就会跳转到视图保护的页面

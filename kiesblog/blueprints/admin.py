@@ -7,6 +7,7 @@ admin_bp = Blueprint('admin', __name__)
 @login_required
 # login_required 只有登陆了才能访问到这个东西  若无登陆进行请求则进入视图保护
 def settings():
+    print("hello")
     return render_template('admin/settings.html')
 
 # @admin_bp.before_request

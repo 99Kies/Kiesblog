@@ -8,7 +8,6 @@ from kiesblog.utils import redirect_back
 # from kiesblog.settings import BaseConfig
 
 blog_bp = Blueprint('blog', __name__)
-login_manager.login_view = 'login'
 
 @blog_bp.route('/', defaults={'page':1})
 @blog_bp.route('/page/<int:page>')
@@ -61,7 +60,7 @@ def show_post(post_id):
         form = AdminCommentForm()
         form.author.data = current_user.name
         form.email.data = current_app.config['KIESBLOG_EMAIL']
-        form.site.data = url_for('.index')
+        form.site.data = url_for('blog.index')
         from_admin = True
         reviewed = True
     else:
@@ -86,14 +85,14 @@ def show_post(post_id):
         else:
             flash('Thanks, your comment will be published after reviewed.', 'info')
             send_new_comment_email(post)
-        return redirect(url_for('.show_post',post_id=post.id))
+        return redirect(url_for('blog.show_post',post_id=post.id))
     return render_template('blog/post.html', post=post, pagination=pagination, form=form, comments=comments)
 
 
 @blog_bp.route('/reply/comment/<int:comment_id>')
 def reply_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
-    return redirect(url_for('.show_post',post_id=comment.post_id, reply=comment_id, author=comment.author)+'#comment-form')
+    return redirect(url_for('blog.show_post',post_id=comment.post_id, reply=comment_id, author=comment.author)+'#comment-form')
 
 
 # @blog_bp.route('/change-theme/<theme_name>')
