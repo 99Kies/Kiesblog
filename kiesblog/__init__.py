@@ -2,13 +2,14 @@ import os
 import click
 from flask import Flask, render_template
 from kiesblog.settings import config
-from kiesblog.extensions import bootstrap, db, moment, mail, ckeditor, login_manager
+from kiesblog.extensions import bootstrap, db, moment, mail, ckeditor, login_manager, csrf
 # from kiesblog.blueprints import auth, admin, blog
 from kiesblog.blueprints.admin import admin_bp
 from kiesblog.blueprints.auth import auth_bp
 from kiesblog.blueprints.blog import blog_bp
 from kiesblog.fakes import db, fake_comments, fake_posts, fake_categories, fake_admin
 from kiesblog.models import Admin, Post, Comment, Category
+from flask_wtf.csrf import CSRFError
 
 def create_app(config_name=None):
     if config_name is None:
@@ -28,6 +29,7 @@ def create_app(config_name=None):
     register_errors(app)
     register_shell_context(app)
     register_template_context(app)
+    register_errorhandler(app)
     return app
 
 def register_logging(app):
@@ -41,8 +43,8 @@ def register_extensions(app):
     mail.init_app(app)
     ckeditor.init_app(app)
     moment.init_app(app)
-
     login_manager.init_app(app)
+    csrf.init_app(app)
 
 def register_blueprints(app):
     # app.register_blueprint(blog.blog_bp)
@@ -135,6 +137,12 @@ def register_template_context(app):
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
         return dict(admin=admin, categories=categories)
+
+
+def register_errorhandler(app):
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/400.html', description=e.description), 400
 
 
 

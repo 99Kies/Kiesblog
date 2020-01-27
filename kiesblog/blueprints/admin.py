@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required
+from kiesblog.models import Post, Admin, Category, Comment, User
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -17,3 +18,9 @@ def settings():
 #     给整个admin_bp子目录添加视图保护
 #     '''
 #     pass
+
+@admin_bp.route('/post/delete/<id>', methods=["POST"])
+def delete_post(id):
+    post = Post.query.get(id)
+    post.delete()
+    return redirect(url_for('blog.index'))
